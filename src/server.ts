@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extend: true }));
 
 app.get('/teste', (request, response) => {
-    response.send(cidades("id=3"));
+    response.send(cidades);
   });
 
 const port: number = 3000;
