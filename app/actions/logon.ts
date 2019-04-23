@@ -13,7 +13,7 @@ export class LogonAction extends Action{
     }
 
     private generateSQL() : string {
-        return 'select * from users where users.username = \'' + this.req.body.userName + '\' and users.password = \'' + this.req.body.password + '\'';
+        return 'select * from usuario where usuario.user = \'' + this.req.body.userName + '\' and usuario.senha = \'' + this.req.body.password + '\';';
     }
 
     @Post('/logon')

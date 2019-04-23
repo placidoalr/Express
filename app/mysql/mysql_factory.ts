@@ -6,6 +6,6 @@ export class MySQLFactory {
     }
 
     public getConnection() : any{
-      return new MySQL('localhost', 'root', '1234', 'rest_api');
+      return new MySQL('localhost', 'root', '', 'rest_api');
     }
 }

@@ -1,30 +1,23 @@
 import {Get} from '../decorators';
 import {Action} from '../kernel/action';
 import {ActionType} from '../kernel/route-types';
+import { MySQLFactory } from '../mysql/mysql_factory';
 
 export class TamanhosAction extends Action {
-
+    private generateSQL() : string {
+        return 'select tamanho.name from tamanho;';
+    }
     @Get('/tamanhos')
     public getTamanhos(){
-        let tamanhos = [
-            {
-                id : 1,
-                name : "Pequeno",
-                quantidade_sabores : 1
+        new MySQLFactory().getConnection().select(this.generateSQL()).subscribe(
+            (tamanhos : any) => {       
+                this.sendAnswer(tamanhos);
             },
-            {
-                id : 2,
-                name : "Médio",
-                quantidade_sabores : 2
-            },
-            {
-                id : 3,
-                name : "Grande",
-                quantidade_sabores : 3
+            (error : any) => {
+                console.log(error);
+                this.sendError(error);
             }
-        ]
-
-        this.sendAnswer(tamanhos);
+        );
     }
 
     defineVisibility() {

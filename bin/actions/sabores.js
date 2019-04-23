@@ -26,44 +26,28 @@ var decorators_1 = require("../decorators");
 var action_1 = require("../kernel/action");
 var route_types_1 = require("../kernel/route-types");
 var kernel_utils_1 = require("../kernel/kernel-utils");
+var mysql_factory_1 = require("../mysql/mysql_factory");
 var SaboresAction = /** @class */ (function (_super) {
     __extends(SaboresAction, _super);
     function SaboresAction() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    SaboresAction.prototype.Get = function () {
-        var tamanho = this.req.params.tamanho;
-        new kernel_utils_1.KernelUtils().createExceptionApiError('1002', 'Tamanho da pizza não informado', (tamanho == null || tamanho == undefined));
-        new kernel_utils_1.KernelUtils().createExceptionApiError('1003', 'Tamanho da pizza inválido', (tamanho < 1 || tamanho > 3));
-        var pizzas = [];
-        if (tamanho == 1) {
-            pizzas.push(this.createPizzaObject('Calabresa', 12.00));
-            pizzas.push(this.createPizzaObject('Quatro Queijos', 15.00));
-            pizzas.push(this.createPizzaObject('Bacon', 13.00));
-            pizzas.push(this.createPizzaObject('Chocolate', 14.00));
-            pizzas.push(this.createPizzaObject('Brocolis', 16.00));
-        }
-        if (tamanho == 2) {
-            pizzas.push(this.createPizzaObject('Calabresa', 18.00));
-            pizzas.push(this.createPizzaObject('Quatro Queijos', 21.00));
-            pizzas.push(this.createPizzaObject('Bacon', 19.00));
-            pizzas.push(this.createPizzaObject('Chocolate', 20.00));
-            pizzas.push(this.createPizzaObject('Brocolis', 22.00));
-        }
-        if (tamanho == 3) {
-            pizzas.push(this.createPizzaObject('Calabresa', 25.00));
-            pizzas.push(this.createPizzaObject('Quatro Queijos', 28.00));
-            pizzas.push(this.createPizzaObject('Bacon', 26.00));
-            pizzas.push(this.createPizzaObject('Chocolate', 27.00));
-            pizzas.push(this.createPizzaObject('Brocolis', 29.00));
-        }
-        this.sendAnswer(pizzas);
+    SaboresAction.prototype.validateData = function () {
+        new kernel_utils_1.KernelUtils().createExceptionApiError('1002', 'Tamanho da pizza não informado', (this.req.params.tamanho == null || this.req.params.tamanho == undefined));
+        new kernel_utils_1.KernelUtils().createExceptionApiError('1003', 'Tamanho da pizza inválido', (this.req.params.tamanho < 1 || this.req.params.tamanho > 3));
     };
-    SaboresAction.prototype.createPizzaObject = function (name, price) {
-        return {
-            sabor: name,
-            preco: price
-        };
+    SaboresAction.prototype.generateSQL = function () {
+        return 'select sabor.sabor, sabor.preco from sabor where sabor.tamanho = \'' + this.req.params.tamanho + '\';';
+    };
+    SaboresAction.prototype.Get = function () {
+        var _this = this;
+        this.validateData();
+        new mysql_factory_1.MySQLFactory().getConnection().select(this.generateSQL()).subscribe(function (sabores) {
+            _this.sendAnswer(sabores);
+        }, function (error) {
+            console.log(error);
+            _this.sendError(error);
+        });
     };
     SaboresAction.prototype.defineVisibility = function () {
         this.actionEscope = route_types_1.ActionType.atPublic;

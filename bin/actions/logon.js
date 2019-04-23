@@ -27,23 +27,34 @@ var action_1 = require("../kernel/action");
 var route_types_1 = require("../kernel/route-types");
 var vputils_1 = require("../utils/vputils");
 var kernel_utils_1 = require("../kernel/kernel-utils");
+var mysql_factory_1 = require("../mysql/mysql_factory");
 var LogonAction = /** @class */ (function (_super) {
     __extends(LogonAction, _super);
     function LogonAction() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    LogonAction.prototype.validateData = function () {
+        new kernel_utils_1.KernelUtils().createExceptionApiError('1001', 'Usuário e senha inválidos', this.req.body.userName == '' || this.req.body.password == '');
+    };
+    LogonAction.prototype.generateSQL = function () {
+        return 'select * from usuario where usuario.user = \'' + this.req.body.userName + '\' and usuario.senha = \'' + this.req.body.password + '\';';
+    };
     LogonAction.prototype.Post = function () {
-        var userName = this.req.body.userName;
-        var password = this.req.body.password;
-        if (userName === "1" && password === "2") {
-            this.sendAnswer({
+        var _this = this;
+        this.validateData();
+        new mysql_factory_1.MySQLFactory().getConnection().select(this.generateSQL()).subscribe(function (data) {
+            if (!data.length || data.length != 1) {
+                _this.sendError(new kernel_utils_1.KernelUtils().createErrorApiObject(401, '1001', 'Usuário e senha inválidos'));
+                return;
+            }
+            _this.sendAnswer({
                 token: new vputils_1.VPUtils().generateGUID().toUpperCase(),
-                userName: userName,
-                password: password
+                userName: _this.req.body.userName,
+                password: _this.req.body.password
             });
-            return;
-        }
-        new kernel_utils_1.KernelUtils().createExceptionApiError('1001', 'Usuário e senha inválidos');
+        }, function (error) {
+            _this.sendError(error);
+        });
     };
     LogonAction.prototype.defineVisibility = function () {
         this.actionEscope = route_types_1.ActionType.atPublic;

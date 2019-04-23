@@ -26,60 +26,29 @@ var decorators_1 = require("../decorators");
 var action_1 = require("../kernel/action");
 var route_types_1 = require("../kernel/route-types");
 var kernel_utils_1 = require("../kernel/kernel-utils");
+var mysql_factory_1 = require("../mysql/mysql_factory");
 var BairrosAction = /** @class */ (function (_super) {
     __extends(BairrosAction, _super);
     function BairrosAction() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.idcidade = _this.req.params.idcidade;
+        return _this;
     }
+    BairrosAction.prototype.validateData = function () {
+        new kernel_utils_1.KernelUtils().createExceptionApiError('1002', 'Cidade não informada', (this.req.params.idcidade == null || this.req.params.idcidade == undefined));
+    };
+    BairrosAction.prototype.generateSQL = function () {
+        return 'select bairro.name from bairro where bairro.id_cidade = \'' + this.req.params.idcidade + '\';';
+    };
     BairrosAction.prototype.getBairros = function () {
-        var bairros = [];
-        var idcidade = this.req.params.idcidade;
-        new kernel_utils_1.KernelUtils().createExceptionApiError('1002', 'Cidade não informada', (idcidade == null || idcidade == undefined));
-        if (idcidade == 1) {
-            bairros.push({
-                name: "Centro",
-                value: 1.50
-            }, {
-                name: "Agua Verde",
-                value: 2.35
-            }, {
-                name: "Chico de Paula",
-                value: 3.80
-            }, {
-                name: "Figueira",
-                value: 4
-            });
-        }
-        if (idcidade == 2) {
-            bairros.push({
-                name: "Seminário",
-                value: 6.8
-            }, {
-                name: "Ano bom",
-                value: 6.75
-            }, {
-                name: "Centro",
-                value: 6
-            });
-        }
-        ;
-        if (idcidade == 3) {
-            bairros.push({
-                name: "Amizade",
-                value: 12
-            }, {
-                name: "Centro",
-                value: 8
-            }, {
-                name: "Avai",
-                value: 7
-            }, {
-                name: "Corticeira",
-                value: 7
-            });
-        }
-        ;
-        this.sendAnswer(bairros);
+        var _this = this;
+        this.validateData();
+        new mysql_factory_1.MySQLFactory().getConnection().select(this.generateSQL()).subscribe(function (bairros) {
+            _this.sendAnswer(bairros);
+        }, function (error) {
+            console.log(error);
+            _this.sendError(error);
+        });
     };
     BairrosAction.prototype.defineVisibility = function () {
         this.actionEscope = route_types_1.ActionType.atPublic;

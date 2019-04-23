@@ -25,30 +25,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var decorators_1 = require("../decorators");
 var action_1 = require("../kernel/action");
 var route_types_1 = require("../kernel/route-types");
+var mysql_factory_1 = require("../mysql/mysql_factory");
 var TamanhosAction = /** @class */ (function (_super) {
     __extends(TamanhosAction, _super);
     function TamanhosAction() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    TamanhosAction.prototype.generateSQL = function () {
+        return 'select tamanho.name from tamanho;';
+    };
     TamanhosAction.prototype.getTamanhos = function () {
-        var tamanhos = [
-            {
-                id: 1,
-                name: "Pequeno",
-                quantidade_sabores: 1
-            },
-            {
-                id: 2,
-                name: "Médio",
-                quantidade_sabores: 2
-            },
-            {
-                id: 3,
-                name: "Grande",
-                quantidade_sabores: 3
-            }
-        ];
-        this.sendAnswer(tamanhos);
+        var _this = this;
+        new mysql_factory_1.MySQLFactory().getConnection().select(this.generateSQL()).subscribe(function (tamanhos) {
+            _this.sendAnswer(tamanhos);
+        }, function (error) {
+            console.log(error);
+            _this.sendError(error);
+        });
     };
     TamanhosAction.prototype.defineVisibility = function () {
         this.actionEscope = route_types_1.ActionType.atPublic;
