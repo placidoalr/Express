@@ -31,7 +31,7 @@ CREATE TABLE sabor (
 );
 
 CREATE TABLE tamanho (
-    id_tamanho INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
     name VARCHAR(45) NOT NULL
 );
 
@@ -63,7 +63,7 @@ INSERT INTO sabor(tamanho, sabor, preco) VALUES (3, 'sabor8', 19);
 INSERT INTO sabor(tamanho, sabor, preco) VALUES (3, 'sabor9', 149);
 INSERT INTO sabor(tamanho, sabor, preco) VALUES (1, 'sabor10', 195);
 
-INSERT INTO tamanho(name) VALUES ('Grande');
-INSERT INTO tamanho(name) VALUES ('M');
-INSERT INTO tamanho(name) VALUES ('P');
+INSERT INTO tamanho(id, name) VALUES (1, 'G');
+INSERT INTO tamanho(id, name) VALUES (2, 'M');
+INSERT INTO tamanho(id, name) VALUES (3, 'P');
 

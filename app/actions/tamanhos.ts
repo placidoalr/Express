@@ -5,12 +5,12 @@ import { MySQLFactory } from '../mysql/mysql_factory';
 
 export class TamanhosAction extends Action {
     private generateSQL() : string {
-        return 'select tamanho.name from tamanho;';
+        return 'select * from tamanho;';
     }
     @Get('/tamanhos')
     public getTamanhos(){
         new MySQLFactory().getConnection().select(this.generateSQL()).subscribe(
-            (tamanhos : any) => {       
+            (tamanhos : any) => {
                 this.sendAnswer(tamanhos);
             },
             (error : any) => {

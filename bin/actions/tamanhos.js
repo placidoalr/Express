@@ -32,7 +32,7 @@ var TamanhosAction = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TamanhosAction.prototype.generateSQL = function () {
-        return 'select tamanho.name from tamanho;';
+        return 'select * from tamanho;';
     };
     TamanhosAction.prototype.getTamanhos = function () {
         var _this = this;

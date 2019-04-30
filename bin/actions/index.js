@@ -16,3 +16,5 @@ var categorias_1 = require("./categorias");
 exports.CategoriasAction = categorias_1.CategoriasAction;
 var produtos_1 = require("./produtos");
 exports.ProdutosAction = produtos_1.ProdutosAction;
+var addPizza_1 = require("./addPizza");
+exports.AddSaborAction = addPizza_1.AddSaborAction;

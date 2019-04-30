@@ -6,6 +6,7 @@ import {CidadesAction} from './cidades';
 import {BairrosAction} from './bairros';
 import {CategoriasAction} from './categorias';
 import {ProdutosAction} from './produtos';
+import {AddSaborAction} from './addPizza';
 
 export {AddUserAction};
 export {LogonAction};
@@ -15,3 +16,4 @@ export {CidadesAction};
 export {BairrosAction};
 export {CategoriasAction};
 export {ProdutosAction};
+export {AddSaborAction};
